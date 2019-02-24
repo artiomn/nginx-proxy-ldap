@@ -1,0 +1,58 @@
+
+user  ${WORKER_USERNAME};
+worker_processes  ${WORKER_COUNT};
+
+error_log  /var/log/nginx/error.log warn;
+#error_log  /log/error.log warn;
+pid        /var/run/nginx.pid;
+
+events {
+    worker_connections  ${WORKER_CONNECTIONS};
+}
+
+http {
+    ##
+    # Basic Settings
+    ##
+
+    include /etc/nginx/mime.types;
+    default_type application/octet-stream;
+
+    sendfile   ${SENDFILE};
+    tcp_nopush ${TCP_NOPUSH};
+    tcp_nodelay ${TCP_NODELAY};
+
+    keepalive_timeout 65;
+    types_hash_max_size 2048;
+
+    # Allow Direct IO from 8M filesize.
+    directio 8m;
+    aio threads;
+
+    ##
+    # Gzip Settings
+    ##
+
+    gzip on;
+
+    gzip_vary on;
+    gzip_proxied any;
+    gzip_comp_level 6;
+    gzip_buffers 16 8k;
+    gzip_http_version 1.1;
+    gzip_types text/plain text/css application/json application/javascript text/xml application/xml application/xml+rss text/javascript;
+
+    log_format  main  '$remote_addr - $remote_user [$time_local] "$request" '
+                      '$status $body_bytes_sent "$http_referer" '
+                      '"$http_user_agent" "$http_x_forwarded_for"';
+
+    log_format upstream_time '$remote_addr - $remote_user [$time_local] '
+                             '"$request" $status $body_bytes_sent '
+                             '"$http_referer" "$http_user_agent"'
+                             'rt=$request_time uct="$upstream_connect_time" uht="$upstream_header_time" urt="$upstream_response_time"';
+
+    access_log  /var/log/nginx/access.log  upstream_time;
+    ${ACCESS_LOG_STATEMENT}
+
+    include /etc/nginx/conf.d/*.conf;
+}
