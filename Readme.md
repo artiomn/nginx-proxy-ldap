@@ -6,8 +6,6 @@ A quick and dirty container that serves data over WEBDAV in an nginx container.
 
 |Path|Description|
 |----|-----------|
-|/data|Exported data, if you want to persist, map this path.|
-|/tmp/upload|Temporary storage for uploads. Map for speed.|
 |/log|A copy of the access log will be written here if USE_PERFLOG=1|
 
 # Environment variables
@@ -57,6 +55,7 @@ In this instance `PUID=1001` and `PGID=1001`. To find yours use `id user` as bel
 
 # Resources
 
+* https://github.com/jtilander/docker-webdav
 * https://www.nginx.com/resources/admin-guide/serving-static-content/
 * https://github.com/kvspb/nginx-auth-ldap
 * https://www.martin-helmich.de/en/blog/monitoring-nginx.html
